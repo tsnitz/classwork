@@ -1,0 +1,273 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={HW3},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{HW3}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{}
+  \preauthor{}\postauthor{}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\section{7.1}\label{section}
+
+\emph{Describe a situation or problem from your job, everyday life,
+current events, etc., for which exponential smoothing would be
+appropriate. What data would you need? Would you expect the value of
+alpha (the first smoothing parameter) to be closer to 0 or 1, and why?}
+
+In my current role I work on forecasting how many field engineers of
+different skillsets we will need on a weekly basis over the next two
+years. This is done using a model which is trained on several years of
+historical timesheet data. The type of work that these engineers is
+doing is extremely seasonal and in addition to the seasonality, the
+historic data can be quite `jagged'. There is not a lot of noise in the
+data, but slightly smoothing the training data improves the performance
+of the model. I think that the jaggedness in the unsmoothed data is a
+result of a lot of processes which we cannot observe so it can just be
+thought of as random noise in this case. I use an exponential smoothing
+algorithm to smooth the historical data before feeding it into the
+model. I do not know what the `alpha' value is in this particular case,
+but I imagine that it is closer to 1 than 0 (assuming the equation is of
+the form in the lectures) since there is not a lot of noise.
+
+\section{7.2}\label{section-1}
+
+\emph{Using the 20 years of daily high temperature data for Atlanta
+(July through October) from Question 6.2 (file temps.txt), build and use
+an exponential smoothing model to help make a judgment of whether the
+unofficial end of summer has gotten later over the 20 years. (Part of
+the point of this assignment is for you to think about how you might use
+exponential smoothing to answer this question. Feel free to combine it
+with other models if you'd like to. There's certainly more than one
+reasonable approach.)}
+
+We begin with loading required packages and the dataset. Also define the
+CUSUM function to use and a nice function for showing regression lines
+on scatter plots.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(reshape)}
+
+\NormalTok{temps <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{"7.2tempsSummer2018.txt"}\NormalTok{, }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{temps}\OperatorTok{$}\NormalTok{DAY <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(temps}\OperatorTok{$}\NormalTok{DAY, }\StringTok{'%e-%b'}\NormalTok{)}
+
+\NormalTok{cusum <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, P, Q)\{}
+\NormalTok{  ans <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{S=}\KeywordTok{double}\NormalTok{(), }\DataTypeTok{alarm=}\KeywordTok{integer}\NormalTok{())}
+\NormalTok{  ans[}\KeywordTok{nrow}\NormalTok{(ans)}\OperatorTok{+}\DecValTok{1}\NormalTok{,] <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)}
+\NormalTok{  mu <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(data)}
+\NormalTok{  std <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(data)}
+\NormalTok{  C <-}\StringTok{ }\NormalTok{P }\OperatorTok{*}\StringTok{ }\NormalTok{std}
+\NormalTok{  thresh <-}\StringTok{ }\NormalTok{Q }\OperatorTok{*}\StringTok{ }\NormalTok{std}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\KeywordTok{length}\NormalTok{(data))\{}
+\NormalTok{    S <-}\StringTok{ }\KeywordTok{max}\NormalTok{(}\DecValTok{0}\NormalTok{, ans[[i}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{]] }\OperatorTok{+}\StringTok{ }\NormalTok{(mu }\OperatorTok{-}\StringTok{ }\NormalTok{data[i] }\OperatorTok{-}\StringTok{ }\NormalTok{C))}
+\NormalTok{    alarm <-}\StringTok{ }\NormalTok{S }\OperatorTok{>}\StringTok{ }\NormalTok{thresh}
+\NormalTok{    ans[}\KeywordTok{nrow}\NormalTok{(ans)}\OperatorTok{+}\DecValTok{1}\NormalTok{,] <-}\StringTok{ }\KeywordTok{c}\NormalTok{(S, alarm)}
+\NormalTok{  \}}
+\NormalTok{  ans}
+\NormalTok{\}}
+
+\NormalTok{lm_eqn <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(linmodel)\{}
+\NormalTok{  m <-}\StringTok{ }\NormalTok{linmodel;}
+\NormalTok{  eq <-}\StringTok{ }\KeywordTok{substitute}\NormalTok{(}\KeywordTok{italic}\NormalTok{(y) }\OperatorTok{==}\StringTok{ }\NormalTok{a }\OperatorTok{+}\StringTok{ }\NormalTok{b }\OperatorTok{%.%}\StringTok{ }\KeywordTok{italic}\NormalTok{(x)}\OperatorTok{*}\StringTok{","}\OperatorTok{~}\ErrorTok{~}\KeywordTok{italic}\NormalTok{(r)}\OperatorTok{^}\DecValTok{2}\OperatorTok{~}\StringTok{"="}\OperatorTok{~}\NormalTok{r2, }
+                   \KeywordTok{list}\NormalTok{(}\DataTypeTok{a =} \KeywordTok{format}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m)[}\DecValTok{1}\NormalTok{], }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{), }
+                        \DataTypeTok{b =} \KeywordTok{format}\NormalTok{(}\KeywordTok{coef}\NormalTok{(m)[}\DecValTok{2}\NormalTok{], }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{), }
+                        \DataTypeTok{r2 =} \KeywordTok{format}\NormalTok{(}\KeywordTok{summary}\NormalTok{(m)}\OperatorTok{$}\NormalTok{r.squared, }\DataTypeTok{digits =} \DecValTok{3}\NormalTok{)))}
+  \KeywordTok{as.character}\NormalTok{(}\KeywordTok{as.expression}\NormalTok{(eq));                 }
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Analysis begins with a visual inspection of smoothing on temperatures
+from 1996. This uses alpha and beta parameters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datchunk <-}\StringTok{ }\NormalTok{temps[,}\DecValTok{2}\NormalTok{]}
+\NormalTok{smooth <-}\StringTok{ }\KeywordTok{HoltWinters}\NormalTok{(datchunk, }\DataTypeTok{gamma=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{smootheddatchunk <-}\StringTok{ }\KeywordTok{c}\NormalTok{(datchunk[}\DecValTok{1}\NormalTok{],datchunk[}\DecValTok{2}\NormalTok{],smooth}\OperatorTok{$}\NormalTok{fitted[,}\StringTok{'xhat'}\NormalTok{])}
+
+\NormalTok{comparedat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{DAY=}\NormalTok{temps[}\StringTok{'DAY'}\NormalTok{], }\DataTypeTok{actual=}\NormalTok{datchunk, }\DataTypeTok{smoothed=}\NormalTok{smootheddatchunk)}
+
+\NormalTok{meltedcompare <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(comparedat, }\DataTypeTok{id =} \StringTok{'DAY'}\NormalTok{)}
+\KeywordTok{ggplot}\NormalTok{(meltedcompare, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ DAY, }\DataTypeTok{y =}\NormalTok{ value, }\DataTypeTok{colour =}\NormalTok{ variable, }\DataTypeTok{group=}\NormalTok{variable)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Plot of actual temperature and smoothed temperature"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Temperature"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Day"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW3_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+Next we apply HoltWinters smoothing to the raw temperature data for each
+year. Each year of this smoothed data is then fed into the CUSUM model
+with the same parameters as in homework 2.The output of this process is
+a value for each year indicating how many days passed until the CUSUM
+model registered a change (trip date). The plots below show a histogram
+of the trip dates and a timeseries plot of them.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{P <-}\StringTok{ }\DecValTok{1}
+\NormalTok{Q <-}\StringTok{ }\DecValTok{5}
+\NormalTok{firsttriplist <-}\StringTok{ }\KeywordTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (cnum }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{(}\KeywordTok{ncol}\NormalTok{(temps) }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{))\{}
+\NormalTok{  tempdat <-}\StringTok{ }\NormalTok{temps[,cnum }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{]}
+  \CommentTok{# datchunk <- temps[,2]}
+\NormalTok{  smooth <-}\StringTok{ }\KeywordTok{HoltWinters}\NormalTok{(tempdat, }\DataTypeTok{gamma=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{  smootheddatchunk <-}\StringTok{ }\KeywordTok{c}\NormalTok{(tempdat[}\DecValTok{1}\NormalTok{],tempdat[}\DecValTok{2}\NormalTok{],smooth}\OperatorTok{$}\NormalTok{fitted[,}\StringTok{'xhat'}\NormalTok{])}
+\NormalTok{  ans <-}\StringTok{ }\KeywordTok{cusum}\NormalTok{(smootheddatchunk, P, Q)}
+\NormalTok{  firsttrip <-}\StringTok{ }\KeywordTok{which}\NormalTok{(ans}\OperatorTok{$}\NormalTok{alarm }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{  firsttriplist <-}\StringTok{ }\KeywordTok{c}\NormalTok{(firsttriplist,firsttrip)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in HoltWinters(tempdat, gamma = FALSE): optimization difficulties:
+## ERROR: ABNORMAL_TERMINATION_IN_LNSRCH
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(firsttriplist, }\DataTypeTok{xlim=}\KeywordTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{,}\DecValTok{140}\NormalTok{), }\DataTypeTok{xlab=}\StringTok{"First CUSUM trip - # of Days after July 1"}\NormalTok{, }\DataTypeTok{main=}\KeywordTok{sprintf}\NormalTok{(}\StringTok{"Smoothed Input. P: %s, Q: %s, min: %s, max: %s, mean: %s}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, P, Q, }\KeywordTok{min}\NormalTok{(firsttriplist), }\KeywordTok{max}\NormalTok{(firsttriplist), }\KeywordTok{mean}\NormalTok{(firsttriplist)))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW3_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{firsttripdf <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{seq_along}\NormalTok{(firsttriplist), }\DataTypeTok{y=}\NormalTok{firsttriplist)}
+
+\NormalTok{linmodel <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y}\OperatorTok{~}\NormalTok{x, firsttripdf)}
+\KeywordTok{ggplot}\NormalTok{(firsttripdf, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{x, }\DataTypeTok{y=}\NormalTok{y)) }\OperatorTok{+}
+\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method=}\StringTok{'lm'}\NormalTok{) }\OperatorTok{+}
+\KeywordTok{geom_text}\NormalTok{(}\DataTypeTok{x =} \DecValTok{13}\NormalTok{, }\DataTypeTok{y =} \DecValTok{100}\NormalTok{, }\DataTypeTok{label =} \KeywordTok{lm_eqn}\NormalTok{(linmodel), }\DataTypeTok{parse =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{HW3_files/figure-latex/unnamed-chunk-3-2.pdf}
+
+
+\end{document}

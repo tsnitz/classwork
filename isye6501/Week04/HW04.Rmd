@@ -1,0 +1,237 @@
+---
+title: "HW04"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+## 9.1
+*Using the same crime data set uscrime.txt as in Question 8.2, apply Principal Component Analysis and then create a regression model using the first few principal components. Specify your new model in terms of the original variables (not the principal components), and compare its quality to that of your solution to Question 8.2. You can use the R function prcomp for PCA. (Note that to first scale the data, you can include scale. = TRUE to scale as part of the PCA function. Don't forget that, to make a prediction for the new city, you'll need to unscale the coefficients (i.e., do the scaling calculation in reverse)!)*
+
+Begin by loading the data and performing a PCA on the feature fields.
+
+```{r}
+crime <- read.table("9.1uscrimeSummer2018.txt", header=TRUE)
+
+pca <- prcomp(crime[,1:15], scale. = TRUE)
+summary(pca)
+```
+
+Concatenate the first n_pca_fields to the target value (Crime field) for each data point in the crime df. Using n_pca_fields=7 here
+because that is the fewest number of components which are responsible for >90% of the variance in the initial fields.
+
+
+```{r}
+n_pca_fields <- 7
+pca_crime <- data.frame(cbind(pca$x[,1:n_pca_fields], Crime=crime[,16]))
+
+model <- lm(Crime~., data=pca_crime)
+summary(model)
+```
+
+Converting the PCA coefficients to their equivalent in terms of the original fields in the data set. Also have to undo the scaling that was done in the prcomp function prior to the PCA.
+
+```{r}
+model_pca_coef <- model$coefficients[2:length(model$coefficients)]
+pca_x_comp <- t(pca$rotation[,1:length(model$coefficients) - 1])
+scaled_coef <- model_pca_coef%*%pca_x_comp
+intercept <- model$coefficients[1] - sum(scaled_coef*sapply(crime[,1:15], mean)/sapply(crime[,1:15],sd))
+coef <- scaled_coef/sapply(crime[,1:15],sd)
+```
+
+Now use the de-scaled coefficients and intercept to see what this model calculates for the test point from question 8.2.
+
+```{r}
+M = 14.0
+So = 0
+Ed = 10.0
+Po1 = 12.0
+Po2 = 15.5
+LF = 0.640
+M.F = 94.0
+Pop = 150
+NW = 1.1
+U1 = 0.120
+U2 = 3.6
+Wealth = 3200
+Ineq = 20.1
+Prob = 0.04
+Time = 39.0
+testpoint <- data.frame(M,So,Ed, Po1, Po2, LF, M.F, Pop, NW, U1, U2, Wealth, Ineq, Prob, Time)
+ans <- coef%*%t(as.matrix(testpoint)) + intercept
+ans
+```
+
+Using 7 out of 15 PCs explains 92% of the variance we see in the fields of interest. Even so, the model built on these PCs gives a substantially different prediction for the new data point: 1230 for the PCA based model versus 155 for the original model from question 8.2. Let's take a look at how the r-squared values for the PCA based model compare to the results from 8.2.
+
+```{r}
+summary(model)$r.squared
+summary(model)$adj.r.squared
+```
+
+The PCA based model has r-squared and adjusted r-squared values of 0.69 and 0.63 respectively. Compare this to the original model which had 0.80 and 0.71 for these measures. PCA has allowed us to condense the input data set into fewer components, but at the cost of goodness of fit of the model to the data. This will generally be the case with PCA, but in some instances where the data set is massive and/or some of the fields are very highly correlated, the tradeoff between reduced complexity and reduced goodness of fit will be more favorable and PCA will be a useful tool. For a data set of this size and amount of correlation among fields, PCA is probably not very useful.
+
+## 10.1
+
+*Using the same crime data set uscrime.txt as in Questions 8.2 and 9.1, find the best model you can using*
+*(a) a regression tree model, and*
+*(b) a random forest model.*
+*In R, you can use the tree package or the rpart package, and the randomForest package. For each model, describe one or two qualitative takeaways you get from analyzing the results (i.e., don't just stop when you have a good model, but interpret it too).*
+
+Begin by loading the necessary packages and data. Split the data set into a training and a testing set.
+
+```{r}
+library(tree)
+library(randomForest)
+set.seed(1)
+
+calc.RMSE <- function(predicted, actual){
+  RMSE <- sqrt(mean((predicted - actual)^2))
+}
+
+crime <- read.table("9.1uscrimeSummer2018.txt", header=TRUE)
+test_ind <- sample(1:nrow(crime), size=12)
+crime_train <- crime[-test_ind,]
+crime_test <- crime[test_ind,]
+```
+
+Using a regression tree model we get the following performance on the training set and on the test set.
+
+```{r}
+cart_model <- tree(Crime~., data=crime_train, x=TRUE, y=TRUE)
+cart_rmse_train <- calc.RMSE(predict(cart_model), cart_model$y)
+cart_mean_abs_e_train <- mean(abs((predict(cart_model) - cart_model$y)/cart_model$y))
+cart_rmse_test <- calc.RMSE(predict(cart_model, crime_test), crime_test$Crime)
+cart_mean_abs_e_test <- mean(abs((predict(cart_model, crime_test) - crime_test$Crime)/crime_test$Crime))
+```
+
+```{r, echo=FALSE}
+cat(sprintf("Training RMSE: %s\n", round(cart_rmse_train,1)))
+cat(sprintf("For training data: On average, the model predicted value is within %s percent of the actual value\n", round(100*cart_mean_abs_e_train,1)))
+cat(sprintf("Test RMSE: %s\n", round(cart_rmse_test,1)))
+cat(sprintf("For testing data: On average, the model predicted value is within %s percent of the actual value\n", round(100*cart_mean_abs_e_test,1)))
+```
+
+
+The large disparity between the performance on the training data and the testing data indicate that the classifier is over fitting the training data. 
+
+Using the same training and test set but this time with a random forest classifier yields the following results:
+
+```{r}
+numpred <- 4
+rf_model <- randomForest(Crime~., data=crime_train, mtry=numpred, importance=TRUE)
+rf_rmse_train <- calc.RMSE(predict(rf_model), rf_model$y)
+rf_mean_abs_e_train <- mean(abs((predict(rf_model) - rf_model$y)/rf_model$y))
+rf_rmse_test <- calc.RMSE(predict(rf_model, crime_test), crime_test$Crime)
+rf_mean_abs_e_test <- mean(abs((predict(rf_model, crime_test) - crime_test$Crime)/crime_test$Crime))
+```
+
+```{r, echo=FALSE}
+cat(sprintf("RMSE: %s\n", round(rf_rmse_train,1)))
+cat(sprintf("For training data: On average, the model predicted value is within %s percent of the actual value\n", round(100*rf_mean_abs_e_train,1)))
+cat(sprintf("RMSE: %s\n", round(rf_rmse_test,1)))
+cat(sprintf("For testing data:On average, the model predicted value is within %s percent of the actual value\n", round(100*rf_mean_abs_e_test,1)))
+```
+
+Here we see that the random forest classifier has similar performance for the training and test data sets. It seems to generalize better than the single regression tree in the first section and offers better results on the test set than the single regression tree does. 
+
+These results are consistent with what we expect from these models. The random forest method fits many (500 in this case) trees to bootstrapped samples of the underlying data. Each of these samples is biased, but by aggregating them into a 'forest' of trees, the biases of the individual trees is cancelled out.
+
+I also learned something new about the regression tree when working on this problem. The lecture led me to believe that this function was segmenting the data into leaves and then fitting a regression model to each of these leaves. This, however, is not exactly what is happening as evidenced by the fact that there are only 5 unique model predicted values for the 35 data points in the training data set:
+
+```{r}
+length(predict(cart_model))
+length(unique(predict(cart_model)))
+```
+
+The tree model is actually iterating through the sorted lists of values for each feature and splitting such that the combined sum of the squared deviations from the group average for each newly created group is minimized. The predicted value for a point in a leaf is then just the average value of that leaf. 
+
+## 10.2
+*Describe a situation or problem from your job, everyday life, current events, etc., for which a logistic regression model would be appropriate. List some (up to 5) predictors that you might use.*
+
+I am interested in understanding whether or not a candidate will win or lose an election. This is a situation with a binary outcome (0 or 1). Some variables of interest for this might be:
+
+1. Amount of money spent on the campaign.
+2. Amount of commercial airtime.
+3. Amount of twitter tweets.
+4. Whether or not the candidate is an incumbent.
+5. How the candidate's party is trending in recent elections in their district/state/country.
+
+## 10.3
+*1. Using the GermanCredit data set germancredit.txt from* *http://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german / (description at http://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29 ), use logistic regression to find a good predictive model for whether credit applicants are good credit risks or not. Show your model (factors used and their coefficients), the software output, and the quality of fit. You can use the glm function in R. To get a logistic regression (logit) model on data where the response is either zero or one, use family=binomial(link="logit") in your glm function call.*
+
+*2. Because the model gives a result between 0 and 1, it requires setting a threshold probability to separate between "good" and "bad" answers. In this data set, they estimate that incorrectly identifying a bad customer as good, is 5 times worse than incorrectly classifying a good customer as bad. Determine a good threshold probability based on your model.*
+
+Begin with loading the data, transforming the response value so that it is between 0 and 1 instead of 1 and 2 and dividing the data into test and train data. After this, a logistic regression model is fitted to the training data and we show a summary of the model statistics and a 10-fold cross validation estimate of prediction error.
+
+```{r}
+findat <- data.frame(read.table("10.3germancreditSummer2018.txt", header = F))
+findat[,21] <- findat[,21] - 1
+
+
+train_indices <- sample(1:nrow(findat), size = round(nrow(findat) * .8))
+train = findat[train_indices,]
+test = findat[-train_indices,]
+
+func = V21 ~ factor(V1) + V2 + factor(V3) + factor(V4) + V5 + factor(V6) + factor(V7) + V8 + factor(V9) + factor(V10) + V11 + factor(V12) + V13 + factor(V14) + factor(V15) + V16 + factor(V17) + V18 + factor(V19) + factor(V20)
+model = glm(func, family = binomial(link = "logit"), data = train)
+summary(model)
+#cv.glm(train, model, K = 10)$delta #<---Cannot get this to work in R Markdown. Output should be
+#[0.1709936 0.1696361]
+```
+From here we will use the test data set to determine the optimum threshold for minimizing our cost function. It is 5 times worse to flag a bad customer as good than it is to flag a good customer as bad. In our transformed data set, 0 denotes a good customer and 1 denotes a bad customer. Due to this our cost function will be 5\*FN + 1\*FP where FN is a False Negative and FP is a False Positive. 
+
+```{r, include=FALSE}
+library(stats)
+library(boot)
+library(caret)
+library(pROC)
+```
+
+
+```{r}
+set.seed(1)
+
+pred = predict.glm(model, newdata = test, type = 'response')
+
+thresholdlist <- c(1:50)/50
+totalcost = matrix(, length(thresholdlist), ncol = 2)
+n = 1
+for (testthresh in thresholdlist) {
+  answerx = matrix(, nrow(test), ncol = 1)
+  for (x in 1:length(pred)) {
+    if (pred[x] >= testthresh) {
+      answerx[x] = 1
+    } else
+      answerx[x] = 0
+  }
+  cm = confusionMatrix(data = as.factor(answerx),
+                       reference = as.factor(test$V21),
+                       positive = '0')
+  cost = cm$table[2, 1] * 1 + cm$table[1, 2] * 5
+  totalcost[n, 1] = testthresh
+  totalcost[n, 2] = cost
+  n = n + 1
+}
+
+opt_threshold <- totalcost[which.min(totalcost[, 2]), 1]
+
+answerx = matrix(, nrow(test), ncol = 1)
+for (x in 1:length(pred)) {
+  if (pred[x] >= opt_threshold) {
+    answerx[x] = 1
+  } else
+    answerx[x] = 0
+}
+
+cm = confusionMatrix(data = as.factor(answerx),
+                     reference = as.factor(test$V21),
+                     positive = '0')
+cm
+```
+
+```{r, echo=FALSE}
+cat(sprintf("Optimum threshold is %s\n", opt_threshold))
+```
+
+From the above we see that the optimum threshold is at 0.06 and that this threshold leads to 4 FNs and 97 FPs for the test data set. 
